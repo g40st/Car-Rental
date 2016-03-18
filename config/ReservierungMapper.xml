@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="ReservierungMapper">
+	<select id="selectReservierung" resultType="business.Reservierung" parameterType="int">
+    	select * from Reservierung where ModellID = #{id}
+ 	</select>
+ 	
+ 	<insert id = "insertReservierung" parameterType = "business.Reservierung">
+   			INSERT INTO Reservierung (KundeID, ModellID, Beginn, Ende) 
+   			VALUES (#{kundeID}, #{modellID}, #{beginn}, #{ende}); 
+</insert>
+</mapper>

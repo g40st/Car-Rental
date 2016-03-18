@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="AutomodellMapper">
+  <select id="selectAutoModell" resultType="business.AutoModell" parameterType="int">
+    select * from Automodell where id = #{id}
+  </select>
+  
+  <select id="selectAllAutoModell" resultType="business.AutoModell">
+    select am.ID,am.Bezeichnung,am.Hersteller,aa.Art,am.kw,am.Treibstoff,am.Achsen, am.PreisTag, am.PreisKM, am.Zuladung, am.Fuererschein, am.Ladevolumen,am.Sitzplaetze
+    from Automodell am join Autoarten aa on am.Autoart = aa.ID
+  </select>
+  
+  <select id="selectAllFilteredAutoModell" resultType="business.AutoModell" parameterType="Map">
+    select am.ID,am.Bezeichnung,am.Hersteller,aa.Art,am.kw,am.Treibstoff,am.Achsen, am.PreisTag, am.PreisKM, am.Zuladung, am.Fuererschein, am.Ladevolumen,am.Sitzplaetze
+    from Automodell am join Autoarten aa on am.Autoart = aa.ID
+    <trim prefix="where" prefixOverrides="AND">
+     	<if test="Hersteller != null">
+     		AND Hersteller=#{Hersteller}
+     	</if> 
+     	<if test="Bezeichnung != null">
+     		AND Bezeichnung=#{Bezeichnung}
+     	</if>
+     	<if test="Sitzplaetze != null">
+     		AND Sitzplaetze=#{Sitzplaetze}
+     	</if>
+     	<if test="Treibstoff != null">
+     		AND Treibstoff=#{Treibstoff}
+     	</if>
+     	<if test="Autoart != null">
+     		AND Autoart=(select ID from Autoarten where Art=#{Autoart})
+     	</if>
+    </trim>
+  </select>
+</mapper>
