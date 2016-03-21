@@ -147,12 +147,12 @@ public class Reservator extends JFrame implements ActionListener{
 		    	JButton btn = (JButton) event.getSource();
 		    	Reservator reservator = (Reservator) btn.getTopLevelAncestor();
 		    	if (!comboKunde.getSelectedItem().equals("") && !car.getText().equals("")) {
-    				int result = checkAlleReservations();
+    				int result = checkAllReservations();
     				// Auto verfügbar
     				if(result > 0) {
     					int n = JOptionPane.showConfirmDialog(reservator, (result) + " Auto(s) verfügbar!\n\nMöchten Sie ein Auto reservieren?","Auto reservieren",JOptionPane.YES_NO_OPTION);
     					if(n == 0) {
-    						if(checkAlleReservations() > 0) {
+    						if(checkAllReservations() > 0) {
 		    					Reservierung reservierung = new Reservierung();
 		    					reservierung.setKundeID(comboKunde.getSelectedIndex());
 		    					reservierung.setModellID(Integer.parseInt(car.getText()));
@@ -164,6 +164,8 @@ public class Reservator extends JFrame implements ActionListener{
 								}
 		    					ad.insertReservierung(reservierung);
 		    					System.out.println("Datensatz schreiben" );
+    						} else {
+    							JOptionPane.showMessageDialog(reservator,"Alle Fahrzeuge wurden in der Zwischenzeit reserviert!","Fehler",JOptionPane.ERROR_MESSAGE);
     						}
     					}
     				} else {
@@ -180,7 +182,7 @@ public class Reservator extends JFrame implements ActionListener{
 		
 	}
 	
-	private int checkAlleReservations() {
+	private int checkAllReservations() {
 		// verfügbare Autos nach Autoart
 		List<Auto> carList = ad.getFilteredAuto(Integer.parseInt(car.getText()));
 		int countRes = 0;

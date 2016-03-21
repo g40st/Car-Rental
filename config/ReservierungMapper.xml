@@ -9,6 +9,6 @@
  	
  	<insert id = "insertReservierung" parameterType = "business.Reservierung">
    			INSERT INTO Reservierung (KundeID, ModellID, Beginn, Ende) 
-   			VALUES (#{kundeID}, #{modellID}, #{beginn}, #{ende}); 
-</insert>
+   			VALUES (#{kundeID}, #{modellID}, #{beginn}, #{ende});
+	</insert>
 </mapper>
