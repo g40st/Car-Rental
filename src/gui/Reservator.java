@@ -147,44 +147,24 @@ public class Reservator extends JFrame implements ActionListener{
 		    	JButton btn = (JButton) event.getSource();
 		    	Reservator reservator = (Reservator) btn.getTopLevelAncestor();
 		    	if (!comboKunde.getSelectedItem().equals("") && !car.getText().equals("")) {
-    				// verfügbare Autos nach Autoart
-    				List<Auto> carList = ad.getFilteredAuto(Integer.parseInt(car.getText()));
-    				int countRes = 0;
-					Date begin = null;
-					Date end = null;
-    				// Alle Autos iterieren übergebener ID
-    				for(Auto aTmp : carList) {
-    					List<Reservierung> res = ad.getReservierung(aTmp.getModell());
-    					countRes = 0;
-    					for(Reservierung rTmp : res) {
-    						try {
-								begin = dateFormat.parse(datumBeginn.getText());
-								end = dateFormat.parse(datumEnde.getText());
-							} catch (ParseException e) {
-								e.printStackTrace();
-							}
-    						// Auto bereits reserviert für diesen Zeitraum
-    						if((rTmp.getBeginn().compareTo(begin) <= 0 && rTmp.getEnde().compareTo(begin) >= 0) || (rTmp.getBeginn().compareTo(end) <=0 && rTmp.getEnde().compareTo(end)>=0)) {
-    							countRes++;
-    						}
-    					}
-    				}
+    				int result = checkAlleReservations();
     				// Auto verfügbar
-    				if(carList.size()-countRes > 0) {
-    					int n = JOptionPane.showConfirmDialog(reservator, (carList.size()-countRes) + " Auto(s) verfügbar!\n\nMöchten Sie ein Auto reservieren?","Auto reservieren",JOptionPane.YES_NO_OPTION);
-    					
+    				if(result > 0) {
+    					int n = JOptionPane.showConfirmDialog(reservator, (result) + " Auto(s) verfügbar!\n\nMöchten Sie ein Auto reservieren?","Auto reservieren",JOptionPane.YES_NO_OPTION);
     					if(n == 0) {
-	    					Reservierung reservierung = new Reservierung();
-	    					reservierung.setKundeID(comboKunde.getSelectedIndex());
-	    					reservierung.setModellID(Integer.parseInt(car.getText()));
-	    					try {
-								reservierung.setBeginn(dateFormat.parse(datumBeginn.getText()));
-								reservierung.setEnde(dateFormat.parse(datumEnde.getText()));
-							} catch (ParseException e) {
-								e.printStackTrace();
-							}
-	    					ad.insertReservierung(reservierung);
-	    					System.out.println("Datensatz schreiben" ); 
+    						if(checkAlleReservations() > 0) {
+		    					Reservierung reservierung = new Reservierung();
+		    					reservierung.setKundeID(comboKunde.getSelectedIndex());
+		    					reservierung.setModellID(Integer.parseInt(car.getText()));
+		    					try {
+									reservierung.setBeginn(dateFormat.parse(datumBeginn.getText()));
+									reservierung.setEnde(dateFormat.parse(datumEnde.getText()));
+								} catch (ParseException e) {
+									e.printStackTrace();
+								}
+		    					ad.insertReservierung(reservierung);
+		    					System.out.println("Datensatz schreiben" );
+    						}
     					}
     				} else {
     					JOptionPane.showMessageDialog(reservator,"Leider sind alle Fahrzeuge mit diesen Daten reserviert!","Fehler",JOptionPane.ERROR_MESSAGE);
@@ -199,6 +179,34 @@ public class Reservator extends JFrame implements ActionListener{
 		});
 		
 	}
+	
+	private int checkAlleReservations() {
+		// verfügbare Autos nach Autoart
+		List<Auto> carList = ad.getFilteredAuto(Integer.parseInt(car.getText()));
+		int countRes = 0;
+		Date begin = null;
+		Date end = null;
+		// Alle Autos iterieren übergebener ID
+		for(Auto aTmp : carList) {
+			List<Reservierung> res = ad.getReservierung(aTmp.getModell());
+			countRes = 0;
+			for(Reservierung rTmp : res) {
+				try {
+					begin = dateFormat.parse(datumBeginn.getText());
+					end = dateFormat.parse(datumEnde.getText());
+				} catch (ParseException e) {
+					e.printStackTrace();
+				}
+				// alle Autos bereits reserviert für diesen Zeitraum
+				if((rTmp.getBeginn().compareTo(begin) <= 0 && rTmp.getEnde().compareTo(begin) >= 0) || (rTmp.getBeginn().compareTo(end) <=0 && rTmp.getEnde().compareTo(end)>=0)) {
+					countRes++;
+				}
+			}
+		}
+		return carList.size()-countRes;
+	}
+	
+	
 	
 	// Fenster anzeigen
 	@Override
