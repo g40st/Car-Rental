@@ -45,7 +45,7 @@ public class SearchPanel extends JPanel implements ActionListener {
 		Container c = this;
 		c.setLayout(new GridLayout(6, 2));
 		
-		// Suche nach :Bezeichnung, Hersteller, Autoart, Sitzplaetze, Treibstoff
+		// Suche nach: Bezeichnung, Hersteller, Autoart, Sitzplaetze, Treibstoff
 		vecBezeichnung.add("");
 	 	vecHersteller.add("");
 	 	vecAutoart.add("");

@@ -2,7 +2,7 @@ package dao;
 
 import java.io.IOException;
 import java.io.InputStream;
-
+import java.sql.SQLException;
 import java.util.List;
 import java.util.Map;
 
@@ -10,6 +10,7 @@ import org.apache.ibatis.io.Resources;
 import org.apache.ibatis.session.SqlSession;
 import org.apache.ibatis.session.SqlSessionFactory;
 import org.apache.ibatis.session.SqlSessionFactoryBuilder;
+import org.apache.ibatis.session.TransactionIsolationLevel;
 
 import business.Auto;
 import business.AutoModell;
@@ -47,7 +48,7 @@ public class AutoDaoMyBatis {
 	}
 	
 	
-	public List<AutoModell> getFilteredModell(Map<String, String> map) {
+	public List<AutoModell> getFilteredModell(Map<String,String> map) {
 		SqlSession s = ssf.openSession();
 		List<AutoModell> ams = s.selectList("selectAllFilteredAutoModell",map);
 		s.close();
@@ -76,8 +77,17 @@ public class AutoDaoMyBatis {
 	}
 	
 	public void insertReservierung(Reservierung res) {
-		SqlSession s = ssf.openSession();
-		s.selectList("insertReservierung",res);
-		s.close();
+		SqlSession s = ssf.openSession(TransactionIsolationLevel.SERIALIZABLE);
+		try {
+			s.getConnection().prepareStatement("LOCK TABLES Reservierung WRITE").execute();
+			s.selectList("insertReservierung",res);
+			s.getConnection().prepareStatement("UNLOCK TABLES").execute();
+			s.commit();
+		} catch (SQLException e) {
+			e.printStackTrace();
+		} finally{
+			s.close();
+		}
+		
 	}
 }

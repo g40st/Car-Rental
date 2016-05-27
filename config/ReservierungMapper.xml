@@ -11,4 +11,8 @@
    			INSERT INTO Reservierung (KundeID, ModellID, Beginn, Ende) 
    			VALUES (#{kundeID}, #{modellID}, #{beginn}, #{ende});
 	</insert>
+	
+	<update id="lockTable">
+		lock tables Reservierung read;
+	</update>
 </mapper>
