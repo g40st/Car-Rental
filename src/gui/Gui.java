@@ -15,6 +15,7 @@ import javax.swing.table.DefaultTableModel;
 
 import business.AutoModell;
 import dao.AutoDaoMyBatis;
+import exceptions.DAOException;
 
 public class Gui extends JFrame {
 	private static final long serialVersionUID = -9127982338060064352L;
@@ -52,7 +53,12 @@ public class Gui extends JFrame {
 		this.add(tableGui, BorderLayout.NORTH);
 		
 		// Alle Autos abfragen
-		List<AutoModell> tmp = ad.getAllAutoModelle();
+		List<AutoModell> tmp = null;
+		try {
+			tmp = ad.getAllAutoModelle();
+		} catch (DAOException e) {
+			e.printStackTrace();
+		}
 		tableGui.setData(tmp);
 		
 		// Search Panel

@@ -30,6 +30,7 @@ import business.AutoModell;
 import business.Kunde;
 import business.Reservierung;
 import dao.AutoDaoMyBatis;
+import exceptions.DAOException;
 
 public class Reservator extends JFrame implements ActionListener{	
 
@@ -72,8 +73,12 @@ public class Reservator extends JFrame implements ActionListener{
 		table.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
 		selectionModel = table.getSelectionModel();
 		
-		am = ad.getAllAutoModelle();
-		kList = ad.getAllKunde();
+		try {
+			am = ad.getAllAutoModelle();
+			kList = ad.getAllKunde();
+		} catch(DAOException ex) {
+			
+		}
 		Vector vecKunde = new Vector();
 	 	vecKunde.add("");
 	 	for(Kunde tmp : kList) {
@@ -162,7 +167,11 @@ public class Reservator extends JFrame implements ActionListener{
 								} catch (ParseException e) {
 									e.printStackTrace();
 								}
-		    					ad.insertReservierung(reservierung);
+		    					try {
+									ad.insertReservierung(reservierung);
+								} catch (DAOException e) {
+									e.printStackTrace();
+								}
 		    					System.out.println("Datensatz schreiben" );
     						} else {
     							JOptionPane.showMessageDialog(reservator,"Alle Fahrzeuge wurden in der Zwischenzeit reserviert!","Fehler",JOptionPane.ERROR_MESSAGE);
@@ -184,13 +193,28 @@ public class Reservator extends JFrame implements ActionListener{
 	
 	private int checkAllReservations() {
 		// verfügbare Autos nach Autoart
-		List<Auto> carList = ad.getFilteredAuto(Integer.parseInt(car.getText()));
+		List<Auto> carList = null;
+		try {
+			carList = ad.getFilteredAuto(Integer.parseInt(car.getText()));
+		} catch (NumberFormatException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		} catch (DAOException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		}
 		int countRes = 0;
 		Date begin = null;
 		Date end = null;
 		// Alle Autos iterieren übergebener ID
 		for(Auto aTmp : carList) {
-			List<Reservierung> res = ad.getReservierung(aTmp.getModell());
+			List<Reservierung> res = null;
+			try {
+				res = ad.getReservierung(aTmp.getModell());
+			} catch (DAOException e1) {
+				// TODO Auto-generated catch block
+				e1.printStackTrace();
+			}
 			countRes = 0;
 			for(Reservierung rTmp : res) {
 				try {

@@ -16,6 +16,7 @@ import javax.swing.JPanel;
 
 import business.AutoModell;
 import dao.AutoDaoMyBatis;
+import exceptions.DAOException;
 
 public class SearchPanel extends JPanel implements ActionListener {
 	private static final long serialVersionUID = 4824126920030177646L;
@@ -127,9 +128,19 @@ public class SearchPanel extends JPanel implements ActionListener {
 		}
 		
 		if(map.size() > 0) {
-			tableGui.setData(ad.getFilteredModell(map));	
+			try {
+				tableGui.setData(ad.getFilteredModell(map));
+			} catch (DAOException e1) {
+				// TODO Auto-generated catch block
+				e1.printStackTrace();
+			}	
 		} else {
-			tableGui.setData(ad.getAllAutoModelle());
+			try {
+				tableGui.setData(ad.getAllAutoModelle());
+			} catch (DAOException e1) {
+				// TODO Auto-generated catch block
+				e1.printStackTrace();
+			}
 		}
 	}
 }
