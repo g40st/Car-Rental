@@ -192,47 +192,32 @@ public class Reservator extends JFrame implements ActionListener{
 	}
 	
 	private int checkAllReservations() {
-		// verfügbare Autos nach Autoart
 		List<Auto> carList = null;
+		List<Reservierung> res = null;
 		try {
 			carList = ad.getFilteredAuto(Integer.parseInt(car.getText()));
+			res = ad.getReservierung(Integer.parseInt(car.getText()));
 		} catch (NumberFormatException e1) {
-			// TODO Auto-generated catch block
 			e1.printStackTrace();
 		} catch (DAOException e1) {
-			// TODO Auto-generated catch block
 			e1.printStackTrace();
 		}
 		int countRes = 0;
 		Date begin = null;
 		Date end = null;
-		// Alle Autos iterieren übergebener ID
-		for(Auto aTmp : carList) {
-			List<Reservierung> res = null;
+		for(Reservierung rTmp : res) {
 			try {
-				res = ad.getReservierung(aTmp.getModell());
-			} catch (DAOException e1) {
-				// TODO Auto-generated catch block
-				e1.printStackTrace();
+				begin = dateFormat.parse(datumBeginn.getText());
+				end = dateFormat.parse(datumEnde.getText());
+			} catch (ParseException e) {
+				e.printStackTrace();
 			}
-			countRes = 0;
-			for(Reservierung rTmp : res) {
-				try {
-					begin = dateFormat.parse(datumBeginn.getText());
-					end = dateFormat.parse(datumEnde.getText());
-				} catch (ParseException e) {
-					e.printStackTrace();
-				}
-				// alle Autos bereits reserviert für diesen Zeitraum
-				if((rTmp.getBeginn().compareTo(begin) <= 0 && rTmp.getEnde().compareTo(begin) >= 0) || (rTmp.getBeginn().compareTo(end) <=0 && rTmp.getEnde().compareTo(end)>=0)) {
-					countRes++;
-				}
+			if((rTmp.getBeginn().compareTo(begin) <= 0 && rTmp.getEnde().compareTo(begin) >= 0) || (rTmp.getBeginn().compareTo(end) <=0 && rTmp.getEnde().compareTo(end)>=0)) {
+				countRes++;
 			}
 		}
 		return carList.size()-countRes;
 	}
-	
-	
 	
 	// Fenster anzeigen
 	@Override
