@@ -1,6 +1,6 @@
 # Car Rental (Java, MySQL)
 
-This is a small car rental system. It can be used to reservate cars from a pool of vehicles.  
+This is a small car rental system. It can be used to book cars from a pool of vehicles.  
 
 ![dapro](https://user-images.githubusercontent.com/7523395/34338571-2d1751f0-e96a-11e7-8069-8838751b8bbf.gif)
 
